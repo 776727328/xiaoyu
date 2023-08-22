@@ -1,0 +1,24 @@
+server:
+  port: 8080
+
+spring:
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+    listener:
+      simple:
+        default-requeue-rejected: true #重试次数超过上面的设置之后是否丢弃（false不丢弃时需要写相应代码将该消息加入死信队列）
+        #acknowledge-mode: manual  # 确认模式为手动确认-需要在代码中手动ACK
+        acknowledge-mode: auto  # 异常nack  正常ack
+        # 重试机制
+        retry:
+          enabled: true #是否开启消费者重试
+          max-attempts: 3 #最大重试次数
+          initial-interval: 5000ms #重试间隔时间（单位毫秒）
+          max-interval: 1200000ms #重试最大时间间隔（单位毫秒）
+          # 乘子。间隔时间*乘子=下一次的间隔时间，不能超过max-interval
+          # 以本处为例：第一次间隔 5 秒，第二次间隔 10 秒，以此类推
+          multiplier: 2
